@@ -41,7 +41,7 @@ client.on('message', message => {
     message.channel.send('pong');
   }
 
-  if (message.content.startWith('roll')) {
+  if (message.content.startsWith('roll')) {
     var result = rollDice(message.content);
     // Send "pong" to the same channel
     message.channel.send(result);
