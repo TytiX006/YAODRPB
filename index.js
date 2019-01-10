@@ -1,5 +1,4 @@
 var Discord = require('discord.io');
-var logger = require('winston');
 
 var app = require('express')();
 
@@ -13,21 +12,18 @@ app.listen(PORT, function () {
   console.log('server started on PORT', PORT);
 });
 
-// Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
-    colorize: true
-});
-logger.level = 'debug';
+
+console.log('TOKEN ------------', process.env.DISCORD_TOKEN);
+
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: process.env.DISCORD_TOKEN,
    autorun: true
 });
 bot.on('ready', function (evt) {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+    console.log('Connected');
+    console.log('Logged in as: ');
+    console.log(bot.username + ' - (' + bot.id + ')');
 });
 bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
@@ -48,4 +44,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             // Just add any case commands if you want to..
          }
      }
+});
+bot.on('error', function(err) {
+  console.error(err);
 });
