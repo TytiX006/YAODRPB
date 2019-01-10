@@ -1,5 +1,3 @@
-// var Discord = require('discord.io');
-
 var app = require('express')();
 
 const PORT = process.env.PORT || 3000;
@@ -12,42 +10,14 @@ app.listen(PORT, function () {
   console.log('server started on PORT', PORT);
 });
 
+var Roll = require('roll'),
+    roll = new Roll();
 
-console.log('TOKEN ------------', process.env.DISCORD_TOKEN);
-
-// // Initialize Discord Bot
-// var bot = new Discord.Client({
-//    token: process.env.DISCORD_TOKEN,
-//    autorun: true
-// });
-// bot.on('ready', function (evt) {
-//     console.log('Connected');
-//     console.log('Logged in as: ');
-//     console.log(bot.username + ' - (' + bot.id + ')');
-// });
-// bot.on('message', function (user, userID, channelID, message, evt) {
-//     // Our bot needs to know if it will execute a command
-//     // It will listen for messages that will start with `!`
-//     if (message.substring(0, 1) == '!') {
-//         var args = message.substring(1).split(' ');
-//         var cmd = args[0];
-//
-//         args = args.splice(1);
-//         switch(cmd) {
-//             // !ping
-//             case 'ping':
-//                 bot.sendMessage({
-//                     to: channelID,
-//                     message: 'Pong!'
-//                 });
-//             break;
-//             // Just add any case commands if you want to..
-//          }
-//      }
-// });
-// bot.on('error', function(err) {
-//   console.error(err);
-// });
+function rollDice(messageContent) {
+  var dice = messageContent.replace('roll ', '');
+  var result = roll.roll(dice)
+  return JSON.stringify(result);
+}
 
 // Import the discord.js module
 const Discord = require('discord.js');
@@ -69,6 +39,12 @@ client.on('message', message => {
   if (message.content === 'ping') {
     // Send "pong" to the same channel
     message.channel.send('pong');
+  }
+
+  if (message.content.startWith('roll')) {
+    var result = rollDice(message.content);
+    // Send "pong" to the same channel
+    message.channel.send(result);
   }
 });
 
