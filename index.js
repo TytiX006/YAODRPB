@@ -21,6 +21,21 @@ function rollDice(dice) {
   return result;
 }
 
+function renderRoll(dice, author) {
+  var result = rollDice(dice);
+
+  result.rolled = result.rolled.map((diceValue, i, a) => {
+     return {
+      value: diceValue,
+      comma: i===a.length -1 ? false : true
+    };
+  });
+  result.author = author;
+
+  var template = fs.readFileSync('templates/roll_response.mustache', 'utf8');
+  return Mustache.render(template, result);
+}
+
 // Import the discord.js module
 const Discord = require('discord.js');
 
@@ -45,12 +60,17 @@ client.on('message', message => {
 
   if (message.content.toLowerCase().startsWith('roll ')) {
     var dice = message.content.toLowerCase().replace('roll ', '');
-    var result = rollDice(dice);
-    // Send "pong" to the same channel
-    var template = fs.readFileSync('templates/roll_response.mustache', 'utf8');
-    message.channel.send(Mustache.render(template, result));
+
+    message.channel.send(renderRoll(dice, message.author.username));
+
+    message.delete()
+      .then(msg => console.log(`Deleted message from ${msg.author.username}`))
+      .catch(console.error);
   }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
 client.login(process.env.DISCORD_TOKEN);
+
+
+console.log(renderRoll('3d6+3', 'hi'));
