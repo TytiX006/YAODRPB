@@ -1,4 +1,5 @@
 var app = require('express')();
+var fs = require('fs');
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,7 +15,7 @@ var Roll = require('roll'),
     roll = new Roll();
 
 function rollDice(messageContent) {
-  var dice = messageContent.replace('roll ', '');
+
   var result = roll.roll(dice)
   return JSON.stringify(result);
 }
@@ -41,10 +42,13 @@ client.on('message', message => {
     message.channel.send('pong');
   }
 
-  if (message.content.startsWith('roll')) {
-    var result = rollDice(message.content);
+  if (message.content.toLowerCase().startsWith('roll ')) {
+    var dice = messageContent.replace('roll ', '');
+    var result = rollDice(dice);
+    result.dice = dice;
     // Send "pong" to the same channel
-    message.channel.send(result);
+    var template = fs.readFileSync('template/roll_response.mustache', 'utf8');
+    message.channel.send(Mustache.render(template, result));
   }
 });
 
