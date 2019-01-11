@@ -47,7 +47,7 @@ client.on('message', message => {
     var dice = message.content.toLowerCase().replace('roll ', '');
     var result = rollDice(dice);
     // Send "pong" to the same channel
-    var template = fs.readFileSync('template/roll_response.mustache', 'utf8');
+    var template = fs.readFileSync('templates/roll_response.mustache', 'utf8');
     message.channel.send(Mustache.render(template, result));
   }
 });
