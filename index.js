@@ -1,5 +1,6 @@
 var app = require('express')();
 var fs = require('fs');
+var Mustache = require('mustache');
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,10 +15,10 @@ app.listen(PORT, function () {
 var Roll = require('roll'),
     roll = new Roll();
 
-function rollDice(messageContent) {
-
-  var result = roll.roll(dice)
-  return JSON.stringify(result);
+function rollDice(dice) {
+  var result = roll.roll(dice);
+  result.dice = dice;
+  return result;
 }
 
 // Import the discord.js module
@@ -43,9 +44,8 @@ client.on('message', message => {
   }
 
   if (message.content.toLowerCase().startsWith('roll ')) {
-    var dice = messageContent.replace('roll ', '');
+    var dice = message.content.toLowerCase().replace('roll ', '');
     var result = rollDice(dice);
-    result.dice = dice;
     // Send "pong" to the same channel
     var template = fs.readFileSync('template/roll_response.mustache', 'utf8');
     message.channel.send(Mustache.render(template, result));
