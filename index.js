@@ -21,7 +21,7 @@ function rollDice(dice) {
   return result;
 }
 
-renderRollInMessage(dice) {
+function renderRollInMessage(dice) {
   var result = rollDice(dice);
 
   result.rolled = result.rolled.map((diceValue, i, a) => {
@@ -102,3 +102,11 @@ client.on('error', err => {
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
 client.login(process.env.DISCORD_TOKEN);
+
+var testStr = 'ceci est un test: 1d6+3';
+
+const diceRegExp = /(\d{1,3}d\d{1,3})(\+\d{1,3}(d\d{1,3})*)*/gm;
+var newMessageContent = testStr.replace(diceRegExp, (match) => {
+  return renderRollInMessage(match);
+});
+console.log(newMessageContent);
