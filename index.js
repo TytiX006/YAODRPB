@@ -82,29 +82,29 @@ client.on('message', message => {
       .catch(console.error);
   } else {
 
-    // split message in lines
-    var arrayOfLines = message.content.match(/[^\r\n]+/g);
-
-    const diceRegExp = /(\d{1,3}d\d{1,3})(\+\d{1,3}(d\d{1,3})*)*/gm;
-    var buffer = '';
-    for (line of arrayOfLines) {
-      if (line.match(diceRegExp)) {
-        buffer += line.replace(diceRegExp, (match) => {
-          return renderRollInMessage(match);
-        });
-        buffer += '\n';
-      }
-    }
-
-
-    if (arrayOfLines.length === 1) {
-      message.channel.send('*@message.author.username* : '+ buffer.trim());
-      message.delete()
-        .then(msg => console.log(`Deleted message from ${msg.author.username}`))
-        .catch(console.error);
-    } else {
-      message.channel.send(buffer.trim());
-    }
+    // // split message in lines
+    // var arrayOfLines = message.content.match(/[^\r\n]+/g);
+    //
+    // const diceRegExp = /(\d{1,3}d\d{1,3})(\+\d{1,3}(d\d{1,3})*)*/gm;
+    // var buffer = '';
+    // for (line of arrayOfLines) {
+    //   if (line.match(diceRegExp)) {
+    //     buffer += line.replace(diceRegExp, (match) => {
+    //       return renderRollInMessage(match);
+    //     });
+    //     buffer += '\n';
+    //   }
+    // }
+    //
+    //
+    // if (arrayOfLines.length === 1) {
+    //   message.channel.send('*@message.author.username* : '+ buffer.trim());
+    //   message.delete()
+    //     .then(msg => console.log(`Deleted message from ${msg.author.username}`))
+    //     .catch(console.error);
+    // } else {
+    //   message.channel.send(buffer.trim());
+    // }
 
     // var newMessageContent = message.content.replace(diceRegExp, (match) => {
     //   return renderRollInMessage(match);
