@@ -21,6 +21,20 @@ function rollDice(dice) {
   return result;
 }
 
+renderRollInMessage(dice) {
+  var result = rollDice(dice);
+
+  result.rolled = result.rolled.map((diceValue, i, a) => {
+     return {
+      value: diceValue,
+      comma: i===a.length -1 ? false : true
+    };
+  });
+
+  var template = fs.readFileSync('templates/roll_format.mustache', 'utf8');
+  return Mustache.render(template, result);
+}
+
 function renderRoll(dice, author) {
   var result = rollDice(dice);
 
@@ -66,11 +80,25 @@ client.on('message', message => {
     message.delete()
       .then(msg => console.log(`Deleted message from ${msg.author.username}`))
       .catch(console.error);
+  } else {
+    const diceRegExp = /(\d{1,3}d\d{1,3})(\+\d{1,3}(d\d{1,3})*)*/gm;
+    var newMessageContent = message.content.replace(diceRegExp, (match) => {
+      return renderRollInMessage(match);
+    });
+
+    message.edit(newMessageContent).then(msg => console.log('Edited message : ', msg)).catch(console.error);
+    message.react(':heavy_check_mark:'); // ✔
+
   }
+});
+
+client.on('messageUpdate', (oldMessage, newMessage) => {
+  console.log('update :', oldMessage, newMessage);
+});
+
+client.on('error', err => {
+  console.error(err);
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
 client.login(process.env.DISCORD_TOKEN);
-
-
-console.log(renderRoll('3d6+3', 'hi'));
