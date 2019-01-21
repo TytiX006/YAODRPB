@@ -97,16 +97,17 @@ client.on('message', message => {
         }
       }
 
-      if (arrayOfLines.length === 1) {
-        message.channel.send('*@' + message.author.username + '* : '+ buffer.trim());
-        message.delete()
-          .then(msg => console.log(`Deleted message from ${msg.author.username}`))
-          .catch(console.error);
-      } else {
-        message.channel.send(buffer.trim());
+      if (buffer !== '') {
+        if (arrayOfLines.length === 1) {
+          message.channel.send('*@' + message.author.username + '* : '+ buffer.trim());
+          message.delete()
+            .then(msg => console.log(`Deleted message from ${msg.author.username}`))
+            .catch(console.error);
+        } else {
+          message.channel.send(buffer.trim());
+        }
       }
     }
-
   }
 });
 
